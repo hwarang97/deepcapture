@@ -10,6 +10,8 @@ from albumentations.pytorch import ToTensorV2
 from sklearn.model_selection import train_test_split
 
 def split_dataset(folder_path, label, val_size=0.1, test_size=0.1):
+
+    
     all_images = [os.path.join(folder_path, f) for f in os.listdir(folder_path) 
                   if f.endswith(('.png', '.jpg', '.jpeg', '.gif'))]
     
