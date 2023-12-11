@@ -12,7 +12,7 @@ def train_model(model, train_loader, val_loader, num_epochs, learning_rate, devi
     
     # loss func, optimizer
     criterion = nn.BCELoss()
-    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay = 1e-5)
 
     # store value
     train_losses = []
