@@ -71,7 +71,7 @@ class ImageDataset(Dataset):
     
 def get_loaders(train_data, val_data, test_data, batch_size=32):
     transform = A.Compose([
-    A.Resize(76, 76),
+    A.Resize(32, 32),
     # A.Rotate(limit=45, p=0.5),
     # A.RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.2, p=0.5),
     A.Equalize(p=1.0),
