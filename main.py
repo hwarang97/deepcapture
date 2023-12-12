@@ -1,4 +1,3 @@
-import argparse
 from test import test_model
 
 import numpy as np
@@ -10,16 +9,6 @@ from extract_feature import extract_feature
 from model import CNNModel
 from settings import TrainingSettings as Ts
 from train import train_model
-
-# ratio setting
-parser = argparse.ArgumentParser(description="Image Spam Detection Training")
-parser.add_argument(
-    "--train_ratio", type=float, default=0.8, help="Training data ratio (default: 0.8)"
-)
-parser.add_argument(
-    "--val_ratio", type=float, default=0.1, help="Validation data ratio (default: 0.1)"
-)
-args = parser.parse_args()
 
 
 def main():
