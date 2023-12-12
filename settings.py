@@ -2,7 +2,6 @@ import torch
 from pydantic import BaseSettings
 
 
-# Define a settings class for hyperparameters and paths
 class TrainingSettings(BaseSettings):
     learning_rate: float = 0.0001
     num_epochs: int = 2
