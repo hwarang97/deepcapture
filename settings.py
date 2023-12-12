@@ -10,6 +10,7 @@ class TrainingSettings(BaseSettings):
     batch_size: int = 32
     save_interval: int = 1
     train_cnn: bool = False
+    test_cnn: bool = False
     spam_folder: str
     ham_folder: str
 
