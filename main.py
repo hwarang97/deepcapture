@@ -1,9 +1,13 @@
 import argparse
 from test import test_model
 
+import numpy as np
 import torch
+import xgboost as xgb
+from sklearn.metrics import accuracy_score
 
 from data_loader import get_loaders, split_dataset
+from extract_feature import extract_feature
 from model import CNNModel
 from train import train_model
 
@@ -28,6 +32,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 batch_size = 32
 save_interval = 1
 train_cnn = False
+test_cnn = False
 
 # path
 spam_folder = "/mnt/c/Users/Kim Seok Je/Desktop/대학원/데이터보안과 프라이버시/report/personal_image_spam/personal_image_spam"
@@ -54,13 +59,43 @@ def main():
 
     # init modle
     model = CNNModel().to(device)
+    xgb_model = xgb.XGBClassifier(
+        objective="binary:logistic",
+        n_estimators=100,
+        early_stopping_rounds=10,
+        seed=123,
+    )
 
+    # train
     if train_cnn:
         # train, val
         train_model(model, train_loader, val_loader, num_epochs, learning_rate, device)
 
+    # extract
+    features_train, labels_train = extract_feature(model, train_loader, device)
+    features_val, labels_val = extract_feature(model, val_loader, device)
+
+    # list to numpy
+    features_train = np.array(features_train)
+    labels_train = np.array(labels_train)
+    features_val = np.array(features_val)
+    labels_val = np.array(labels_val)
+
+    # train, val
+    xgb_model.fit(
+        features_train,
+        labels_train,
+        eval_set=[(features_train, labels_train), (features_val, labels_val)],
+    )
+    xgb_model.save_model("xgb_model.json")
+
+    predictions = xgb_model.predict(features_val)
+    accuracy = accuracy_score(labels_val, predictions)
+    print("Validation Accuracy: {:.2f}%".format(accuracy * 100))
+
     # test
-    test_model(model, test_loader, device)
+    if test_cnn:
+        test_model(model, test_loader, device)
 
 
 if __name__ == "__main__":
