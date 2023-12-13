@@ -2,13 +2,20 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from sklearn.metrics import accuracy_score, f1_score
-
 from extract_feature import extract_feature
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import f1_score
 
 
 def train_model(
-    model, train_loader, val_loader, num_epochs, learning_rate, device, save_interval=1
+    model,
+    train_loader,
+    val_loader,
+    num_epochs,
+    learning_rate,
+    device,
+    cnn_model_path,
+    save_interval=1,
 ):
     # loss func, optimizer
     criterion = nn.BCELoss()
@@ -64,14 +71,14 @@ def train_model(
         if epoch % save_interval == 0:
             if valid_loss < best_loss:
                 best_loss = valid_loss
-                torch.save(model.state_dict(), "model_checkpoint.pth")
+                torch.save(model.state_dict(), cnn_model_path)
 
     train_losses.append(train_loss)
     val_losses.append(valid_loss)
     f1_scores.append(f1)
 
 
-def train_xgb(model, xgb_model, train_loader, val_loader, device):
+def train_xgb(model, xgb_model, train_loader, val_loader, device, xgb_model_path):
     # extract
     features_train, labels_train = extract_feature(model, train_loader, device)
     features_val, labels_val = extract_feature(model, val_loader, device)
@@ -88,7 +95,7 @@ def train_xgb(model, xgb_model, train_loader, val_loader, device):
         labels_train,
         eval_set=[(features_train, labels_train), (features_val, labels_val)],
     )
-    xgb_model.save_model("xgb_model.json")
+    xgb_model.save_model(xgb_model_path)
 
     # Evaluate
     predictions = xgb_model.predict(features_val)
