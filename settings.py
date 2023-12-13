@@ -1,5 +1,5 @@
 import torch
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 
 class TrainingSettings(BaseSettings):
@@ -20,3 +20,6 @@ class TrainingSettings(BaseSettings):
 
     class Config:
         env_file = ".env"
+
+
+TrainingSettings = TrainingSettings()
