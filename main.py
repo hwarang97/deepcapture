@@ -42,7 +42,8 @@ def main():
             model, train_loader, val_loader, Ts.num_epochs, Ts.learning_rate, Ts.device
         )
 
-    train_xgb(model, xgb_model, train_loader, val_loader, Ts.device)
+    if Ts.train_xgb:
+        train_xgb(model, xgb_model, train_loader, val_loader, Ts.device)
 
     # test
     if Ts.test_cnn:
