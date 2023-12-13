@@ -8,9 +8,9 @@ from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
 
 
-def test_model(model, test_loader, device):
+def test_model(model, test_loader, device, model_path):
     # Load the model
-    model.load_state_dict(torch.load("model_checkpoint.pth"))
+    model.load_state_dict(torch.load(model_path))
     model.eval()
 
     # criterion
