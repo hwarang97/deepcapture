@@ -36,9 +36,9 @@ def test_model(model, test_loader, device, model_path):
     print(f"Test Loss: {test_loss:.4f}, F1 Score: {f1:.4f}")
 
 
-def test_xgb(model, xgb_model, test_loader, device, model_path):
+def test_xgb(model, xgb_model, test_loader, device, xgb_model_path):
     # Load model
-    xgb_model.load_model(model_path)
+    xgb_model.load_model(xgb_model_path)
 
     # extract
     features_test, labels_test = extract_feature(model, test_loader, device)
