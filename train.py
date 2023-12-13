@@ -71,10 +71,10 @@ def train_model(
     f1_scores.append(f1)
 
 
-def train_xgb(xgb_model, train_loader, val_loader, device):
+def train_xgb(model, xgb_model, train_loader, val_loader, device):
     # extract
-    features_train, labels_train = extract_feature(xgb_model, train_loader, device)
-    features_val, labels_val = extract_feature(xgb_model, val_loader, device)
+    features_train, labels_train = extract_feature(model, train_loader, device)
+    features_val, labels_val = extract_feature(model, val_loader, device)
 
     # list to numpy
     features_train = np.array(features_train)
