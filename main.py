@@ -1,14 +1,11 @@
 from test import test_model
 
-import numpy as np
 import xgboost as xgb
-from sklearn.metrics import accuracy_score
 
 from data_loader import get_loaders, split_dataset
-from extract_feature import extract_feature
 from model import CNNModel
 from settings import TrainingSettings as Ts
-from train import train_model
+from train import train_model, train_xgb
 
 
 def main():
@@ -45,27 +42,7 @@ def main():
             model, train_loader, val_loader, Ts.num_epochs, Ts.learning_rate, Ts.device
         )
 
-    # extract
-    features_train, labels_train = extract_feature(model, train_loader, Ts.device)
-    features_val, labels_val = extract_feature(model, val_loader, Ts.device)
-
-    # list to numpy
-    features_train = np.array(features_train)
-    labels_train = np.array(labels_train)
-    features_val = np.array(features_val)
-    labels_val = np.array(labels_val)
-
-    # train, val
-    xgb_model.fit(
-        features_train,
-        labels_train,
-        eval_set=[(features_train, labels_train), (features_val, labels_val)],
-    )
-    xgb_model.save_model("xgb_model.json")
-
-    predictions = xgb_model.predict(features_val)
-    accuracy = accuracy_score(labels_val, predictions)
-    print("Validation Accuracy: {:.2f}%".format(accuracy * 100))
+    train_xgb(model, xgb_model, train_loader, val_loader, Ts.device)
 
     # test
     if Ts.test_cnn:
