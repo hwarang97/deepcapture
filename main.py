@@ -55,7 +55,7 @@ def main():
 
     # test
     if Ts.test_cnn:
-        test_model(model, test_loader, Ts.device)
+        test_model(model, test_loader, Ts.device, Ts.model_path)
 
 
 if __name__ == "__main__":
