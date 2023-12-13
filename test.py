@@ -56,7 +56,7 @@ def test_xgb(model, xgb_model, test_loader, device, xgb_model_path):
     recall = recall_score(labels_test, predictions)
     f1 = f1_score(labels_test, predictions)
 
-    print(f"Accuracy: {accuracy:.4f}%")
-    print(f"Precision: {precision:.4f}%")
-    print(f"Recall: {recall:.4f}%")
-    print(f"F1 Score: {f1:.4f}%")
+    print(f"Accuracy: {accuracy:.4f}")
+    print(f"Precision: {precision:.4f}")
+    print(f"Recall: {recall:.4f}")
+    print(f"F1 Score: {f1:.4f}")
