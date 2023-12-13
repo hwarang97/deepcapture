@@ -33,6 +33,7 @@ def main():
         n_estimators=100,
         early_stopping_rounds=10,
         seed=123,
+        verbose=True,
     )
 
     # train
