@@ -51,9 +51,7 @@ def main():
         )
 
     if Ts.train_xgb:
-        train_xgb(
-            model, xgb_model, train_loader, val_loader, Ts.device, Ts.xgb_model_path
-        )
+        train_xgb(model, xgb_model, train_loader, val_loader, Ts.device)
 
     # test
     if Ts.test_cnn:
