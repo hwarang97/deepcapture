@@ -1,11 +1,12 @@
 from test import test_model
 
 import xgboost as xgb
-
-from data_loader import get_loaders, split_dataset
+from data_loader import get_loaders
+from data_loader import split_dataset
 from model import CNNModel
 from settings import TrainingSettings as Ts
-from train import train_model, train_xgb
+from train import train_model
+from train import train_xgb
 
 
 def main():
@@ -40,11 +41,19 @@ def main():
     if Ts.train_cnn:
         # train, val
         train_model(
-            model, train_loader, val_loader, Ts.num_epochs, Ts.learning_rate, Ts.device
+            model,
+            train_loader,
+            val_loader,
+            Ts.num_epochs,
+            Ts.learning_rate,
+            Ts.device,
+            Ts.model_path,
         )
 
     if Ts.train_xgb:
-        train_xgb(model, xgb_model, train_loader, val_loader, Ts.device)
+        train_xgb(
+            model, xgb_model, train_loader, val_loader, Ts.device, Ts.xgb_model_path
+        )
 
     # test
     if Ts.test_cnn:
