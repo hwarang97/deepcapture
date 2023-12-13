@@ -11,6 +11,7 @@ class TrainingSettings(BaseSettings):
     train_cnn: bool = False
     test_cnn: bool = False
     train_xgb: bool = False
+    test_xgb: bool = True
     spam_folder: str
     ham_folder: str
 
