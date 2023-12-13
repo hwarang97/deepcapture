@@ -1,7 +1,10 @@
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from sklearn.metrics import f1_score
+from sklearn.metrics import accuracy_score, f1_score
+
+from extract_feature import extract_feature
 
 
 def train_model(
@@ -66,3 +69,28 @@ def train_model(
     train_losses.append(train_loss)
     val_losses.append(valid_loss)
     f1_scores.append(f1)
+
+
+def train_xgb(xgb_model, train_loader, val_loader, device):
+    # extract
+    features_train, labels_train = extract_feature(xgb_model, train_loader, device)
+    features_val, labels_val = extract_feature(xgb_model, val_loader, device)
+
+    # list to numpy
+    features_train = np.array(features_train)
+    labels_train = np.array(labels_train)
+    features_val = np.array(features_val)
+    labels_val = np.array(labels_val)
+
+    # train, val
+    xgb_model.fit(
+        features_train,
+        labels_train,
+        eval_set=[(features_train, labels_train), (features_val, labels_val)],
+    )
+    xgb_model.save_model("xgb_model.json")
+
+    # Evaluate
+    predictions = xgb_model.predict(features_val)
+    accuracy = accuracy_score(labels_val, predictions)
+    print("Validation Accuracy: {:.2f}%".format(accuracy * 100))
