@@ -14,6 +14,8 @@ class TrainingSettings(BaseSettings):
     test_xgb: bool = True
     spam_folder: str
     ham_folder: str
+    model_path: str
+    xgb_model_path: str
 
     # Ratio settings
     train_ratio: float = 0.8
