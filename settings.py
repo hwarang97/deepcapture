@@ -14,6 +14,8 @@ class TrainingSettings(BaseSettings):
     test_xgb: bool = True
     spam_folder: str
     ham_folder: str
+    target_spam_folder: str
+    target_ham_folder: str
     cnn_model_path: str
     xgb_model_path: str
 
