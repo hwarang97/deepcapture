@@ -6,6 +6,7 @@ from PIL import ImageSequence
 
 
 def create_augmented_images(source_folder, target_folder, num_images):
+    # 예시: create_augmented_images(source_folder, target_folder, 10) - 10개의 새로운 이미지 생성
     """이미지 데이터 증강 함수"""
     image_paths = [
         os.path.join(source_folder, file)
@@ -67,14 +68,3 @@ def save_new_image(new_image, target_folder):
         target_folder, f"augmented_{random.randint(1, 10000)}.jpg"
     )
     new_image.save(new_image_path)
-
-
-# 폴더 경로를 설정합니다
-source_folder = "/mnt/c/Users/Kim Seok Je/Desktop/대학원/데이터보안과 프라이버시/term project/dredze-spam_archive/spam_archive_jmlr"
-target_folder = "/mnt/c/Users/Kim Seok Je/Desktop/대학원/데이터보안과 프라이버시/term project/new_dredze_spam_archive"
-
-# 아직 실제 파일 시스템에 접근할 수 없으므로, 실제 환경에서 이 코드를 실행해야 합니다.
-# 여기서는 함수 정의만 제공하며, 원하는 폴더에 적용하실 수 있습니다.
-
-# 예시: create_augmented_images(source_folder, target_folder, 10) - 10개의 새로운 이미지 생성
-create_augmented_images(source_folder, target_folder, 300)
