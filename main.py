@@ -5,12 +5,17 @@ import xgboost as xgb
 from data_loader import get_loaders
 from data_loader import split_dataset
 from model import CNNModel
+from preprocess import create_augmented_images
 from settings import TrainingSettings as Ts
 from train import train_model
 from train import train_xgb
 
 
 def main():
+    # preprocess
+    if Ts.augment_spam:
+        create_augmented_images(Ts.spam_folder, Ts.target_spam_folder, Ts.nums_spam)
+
     # split data
     spam_train, spam_val, spam_test = split_dataset(
         Ts.spam_folder, label=1, val_size=Ts.val_ratio, test_size=Ts.test_ratio
@@ -34,8 +39,6 @@ def main():
         objective="binary:logistic",
         n_estimators=100,
         early_stopping_rounds=10,
-        seed=123,
-        verbose=True,
     )
 
     # train
