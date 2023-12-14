@@ -1,4 +1,5 @@
 from test import test_model
+from test import test_xgb
 
 import xgboost as xgb
 from data_loader import get_loaders
@@ -47,15 +48,20 @@ def main():
             Ts.num_epochs,
             Ts.learning_rate,
             Ts.device,
-            Ts.model_path,
+            Ts.cnn_model_path,
         )
 
     if Ts.train_xgb:
-        train_xgb(model, xgb_model, train_loader, val_loader, Ts.device)
+        train_xgb(
+            model, xgb_model, train_loader, val_loader, Ts.device, Ts.xgb_model_path
+        )
 
     # test
     if Ts.test_cnn:
-        test_model(model, test_loader, Ts.device, Ts.model_path)
+        test_model(model, test_loader, Ts.device, Ts.cnn_model_path)
+
+    if Ts.test_xgb:
+        test_xgb(model, xgb_model, test_loader, Ts.device, Ts.xgb_model_path)
 
 
 if __name__ == "__main__":
