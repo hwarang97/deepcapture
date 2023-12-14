@@ -1,11 +1,12 @@
 from test import test_model
 from test import test_xgb
 
+import ham_augmentation as ha
+import spam_augmentation as sa
 import xgboost as xgb
 from data_loader import get_loaders
 from data_loader import split_dataset
 from model import CNNModel
-from preprocess import create_augmented_images
 from settings import TrainingSettings as Ts
 from train import train_model
 from train import train_xgb
@@ -14,7 +15,12 @@ from train import train_xgb
 def main():
     # preprocess
     if Ts.augment_spam:
-        create_augmented_images(Ts.spam_folder, Ts.target_spam_folder, Ts.nums_spam)
+        sa.create_augmented_images(Ts.spam_folder, Ts.target_spam_folder, Ts.nums_spam)
+
+    if Ts.augment_ham:
+        ha.create_augmented_images(
+            Ts.ham_folder, Ts.target_ham_folder, Ts.nums_ham, Ts.credential_path
+        )
 
     # split data
     spam_train, spam_val, spam_test = split_dataset(
