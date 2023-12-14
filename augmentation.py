@@ -44,48 +44,36 @@ def get_random_images(folder_path, number_of_images):
     return random.sample(images, min(number_of_images, len(images)))
 
 
-# 서비스 계정 키 파일 경로
-key_path = "credential.json"
+def create_augmented_images(folder_path, destination_path, num_images, key_path):
+    downloaded = 0
+    credentials = service_account.Credentials.from_service_account_file(key_path)
+    client = vision.ImageAnnotatorClient(credentials=credentials)
 
-# 서비스 계정으로부터 인증 정보 가져오기
-credentials = service_account.Credentials.from_service_account_file(key_path)
+    # 랜덤으로 이미지 선택
+    selected_images = get_random_images(folder_path, num_images)  # 5개의 이미지를 랜덤으로 선택
 
-# API 클라이언트 초기화
-client = vision.ImageAnnotatorClient(credentials=credentials)
+    for image_name in selected_images:
+        file_path = os.path.join(folder_path, image_name)
 
-# 이미지 폴더 경로
-folder_path = "/mnt/c/Users/Kim Seok Je/Desktop/대학원/데이터보안과 프라이버시/term project/NaturalImages/NaturalImages/"
-destination_path = (
-    "/mnt/c/Users/Kim Seok Je/Desktop/대학원/데이터보안과 프라이버시/term project/new_NaturalImages/"
-)
+        # 이미지 파일 읽기
+        with io.open(file_path, "rb") as image_file:
+            content = image_file.read()
+        image = vision.Image(content=content)
 
-#
-num_image = 50
-downloaded = 0
+        # 유사한 이미지 검색 요청
+        response = client.web_detection(image=image)
+        web_detection = response.web_detection
 
-# 랜덤으로 이미지 선택
-selected_images = get_random_images(folder_path, num_image)  # 5개의 이미지를 랜덤으로 선택
+        # 페이지 URL 추출 및 이미지 다운로드
+        if web_detection.pages_with_matching_images:
+            for page in web_detection.pages_with_matching_images:
+                image_urls = find_image_urls(page.url)
+                for img_url in image_urls:
+                    if img_url.startswith("http"):
+                        download_image(
+                            img_url, f"{destination_path}{downloaded + 1}.jpg"
+                        )
+                        downloaded += 1
 
-for image_name in selected_images:
-    file_path = os.path.join(folder_path, image_name)
-
-    # 이미지 파일 읽기
-    with io.open(file_path, "rb") as image_file:
-        content = image_file.read()
-    image = vision.Image(content=content)
-
-    # 유사한 이미지 검색 요청
-    response = client.web_detection(image=image)
-    web_detection = response.web_detection
-
-    # 페이지 URL 추출 및 이미지 다운로드
-    if web_detection.pages_with_matching_images:
-        for page in web_detection.pages_with_matching_images:
-            image_urls = find_image_urls(page.url)
-            for img_url in image_urls:
-                if img_url.startswith("http"):
-                    download_image(img_url, f"{destination_path}{downloaded + 1}.jpg")
-                    downloaded += 1
-
-print(downloaded)
-print("Image processing completed.")
+    print(downloaded)
+    print("Image processing completed.")
