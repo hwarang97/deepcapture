@@ -16,6 +16,8 @@ class TrainingSettings(BaseSettings):
     ham_folder: str
     target_spam_folder: str
     target_ham_folder: str
+    nums_spam: int
+    nums_ham: int
     cnn_model_path: str
     xgb_model_path: str
 
