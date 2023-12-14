@@ -16,6 +16,7 @@ class TrainingSettings(BaseSettings):
     ham_folder: str
     target_spam_folder: str
     target_ham_folder: str
+    credential_path: str
     augment_spam: bool = False
     augment_ham: bool = False
     nums_spam: int
