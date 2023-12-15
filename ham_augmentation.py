@@ -35,28 +35,19 @@ def find_image_urls(page_url):
     return []
 
 
-def get_random_images(folder_path, number_of_images):
-    images = [
-        f
-        for f in os.listdir(folder_path)
-        if os.path.isfile(os.path.join(folder_path, f))
-    ]
-    return random.sample(images, min(number_of_images, len(images)))
-
-
-def create_augmented_images(folder_path, destination_path, num_images, key_path):
-    downloaded = 0
+def create_augmented_images(ham_train, destination_path, num_images, key_path):
     credentials = service_account.Credentials.from_service_account_file(key_path)
     client = vision.ImageAnnotatorClient(credentials=credentials)
+    augmented_images = []
 
     # 랜덤으로 이미지 선택
-    selected_images = get_random_images(folder_path, num_images)  # 5개의 이미지를 랜덤으로 선택
+    selected_images = random.sample(
+        ham_train, min(num_images, len(ham_train))
+    )  # 5개의 이미지를 랜덤으로 선택
 
-    for image_name in selected_images:
-        file_path = os.path.join(folder_path, image_name)
-
+    for image_path, label in selected_images:
         # 이미지 파일 읽기
-        with io.open(file_path, "rb") as image_file:
+        with io.open(image_path, "rb") as image_file:
             content = image_file.read()
         image = vision.Image(content=content)
 
@@ -70,10 +61,13 @@ def create_augmented_images(folder_path, destination_path, num_images, key_path)
                 image_urls = find_image_urls(page.url)
                 for img_url in image_urls:
                     if img_url.startswith("http"):
-                        download_image(
-                            img_url, f"{destination_path}{downloaded + 1}.jpg"
+                        augmented_image_path = os.path.join(
+                            destination_path,
+                            f"{os.path.basename(image_path)}_aug_{len(augmented_images) + 1}.jpg",
                         )
-                        downloaded += 1
+                        download_image(img_url, augmented_image_path)
+                        # 증강된 이미지의 경로와 레이블을 추가
+                        augmented_images.append((augmented_image_path, label))
 
-    print(downloaded)
     print("Image processing completed.")
+    return ham_train + augmented_images
