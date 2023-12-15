@@ -46,28 +46,32 @@ def create_augmented_images(ham_train, destination_path, num_images, key_path):
     )  # 5개의 이미지를 랜덤으로 선택
 
     for image_path, label in selected_images:
-        # 이미지 파일 읽기
-        with io.open(image_path, "rb") as image_file:
-            content = image_file.read()
-        image = vision.Image(content=content)
+        try:
+            # 이미지 파일 읽기
+            with io.open(image_path, "rb") as image_file:
+                content = image_file.read()
+            image = vision.Image(content=content)
 
-        # 유사한 이미지 검색 요청
-        response = client.web_detection(image=image)
-        web_detection = response.web_detection
+            # 유사한 이미지 검색 요청
+            response = client.web_detection(image=image)
+            web_detection = response.web_detection
 
-        # 페이지 URL 추출 및 이미지 다운로드
-        if web_detection.pages_with_matching_images:
-            for page in web_detection.pages_with_matching_images:
-                image_urls = find_image_urls(page.url)
-                for img_url in image_urls:
-                    if img_url.startswith("http"):
-                        augmented_image_path = os.path.join(
-                            destination_path,
-                            f"{os.path.basename(image_path)}_aug_{len(augmented_images) + 1}.jpg",
-                        )
-                        download_image(img_url, augmented_image_path)
-                        # 증강된 이미지의 경로와 레이블을 추가
-                        augmented_images.append((augmented_image_path, label))
+            # 페이지 URL 추출 및 이미지 다운로드
+            if web_detection.pages_with_matching_images:
+                for page in web_detection.pages_with_matching_images:
+                    image_urls = find_image_urls(page.url)
+                    for img_url in image_urls:
+                        if img_url.startswith("http"):
+                            augmented_image_path = os.path.join(
+                                destination_path,
+                                f"{os.path.basename(image_path)}_aug_{len(augmented_images) + 1}.jpg",
+                            )
+                            download_image(img_url, augmented_image_path)
+                            # 증강된 이미지의 경로와 레이블을 추가
+                            augmented_images.append((augmented_image_path, label))
+        except Exception as e:
+            print(f"Error processing image {image_path}: {e}")
+            continue
 
     print("Image processing completed.")
     return ham_train + augmented_images

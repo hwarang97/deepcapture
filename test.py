@@ -32,8 +32,12 @@ def test_model(model, test_loader, device, model_path):
 
     test_loss = test_loss / len(test_loader.dataset)
     f1 = f1_score(test_targets, test_preds, average="binary")
+    precision = precision_score(test_targets, test_preds, average="binary")
+    recall = recall_score(test_targets, test_preds, average="binary")
+    accuracy = accuracy_score(test_targets, test_preds)
 
     print(f"Test Loss: {test_loss:.4f}, F1 Score: {f1:.4f}")
+    print(f"Precision: {precision:.4f}, Recall: {recall:.4f}, Accuracy: {accuracy:.4f}")
 
 
 def test_xgb(model, xgb_model, test_loader, device, xgb_model_path):

@@ -10,6 +10,15 @@ from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
 
 
+def get_image_paths_with_labels(folder_path, label):
+    image_paths = []
+    for filename in os.listdir(folder_path):
+        if filename.endswith((".png", ".jpg", ".jpeg")):
+            file_path = os.path.join(folder_path, filename)
+            image_paths.append((file_path, label))
+    return image_paths
+
+
 def split_dataset(folder_path, label, val_size=0.1, test_size=0.1):
     all_images = [
         os.path.join(folder_path, f)
@@ -71,7 +80,9 @@ class ImageDataset(Dataset):
 def get_loaders(train_data, val_data, test_data, batch_size=32):
     train_transform = A.Compose(
         [
-            A.RandomResizedCrop(height=32, width=32, scale=(0.8, 0.8)),
+            # A.RandomResizedCrop(height=32, width=32, scale=(0.8, 0.8)),
+            # A.GaussNoise(var_limit=(10, 50), p=1),
+            A.Resize(32, 32),
             A.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
             ToTensorV2(),
         ]

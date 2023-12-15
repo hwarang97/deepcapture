@@ -4,6 +4,7 @@ from test import test_xgb
 import ham_augmentation as ha
 import spam_augmentation as sa
 import xgboost as xgb
+from data_loader import get_image_paths_with_labels
 from data_loader import get_loaders
 from data_loader import split_dataset
 from model import CNNModel
@@ -21,6 +22,15 @@ def main():
         Ts.ham_folder, label=0, val_size=Ts.val_ratio, test_size=Ts.test_ratio
     )
 
+    spam_test = get_image_paths_with_labels(
+        "/mnt/c/Users/Kim Seok Je/Desktop/대학원/데이터보안과 프라이버시/term project/dredze-personal_image_spam/personal_image_spam",
+        1,
+    )
+    ham_test = get_image_paths_with_labels(
+        "/mnt/c/Users/Kim Seok Je/Desktop/대학원/데이터보안과 프라이버시/term project/dredze_personal_image_ham/personal_image_ham",
+        0,
+    )
+
     # augmentation
     if Ts.augment_spam:
         spam_train = sa.create_augmented_images(
@@ -34,6 +44,11 @@ def main():
             Ts.nums_ham,
             Ts.credential_path,
         )
+
+    spam_aug_images = get_image_paths_with_labels(Ts.target_spam_folder, 1)
+    ham_aug_images = get_image_paths_with_labels(Ts.target_ham_folder, 1)
+    spam_train = spam_train + spam_aug_images
+    ham_train = ham_train + ham_aug_images
 
     # combine data
     train_data = spam_train + ham_train
