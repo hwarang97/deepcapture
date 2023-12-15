@@ -21,16 +21,15 @@ def main():
         Ts.ham_folder, label=0, val_size=Ts.val_ratio, test_size=Ts.test_ratio
     )
 
-    # preprocess
+    # augmentation
     if Ts.augment_spam:
         spam_train = sa.create_augmented_images(
-            spam_train, Ts.spam_folder, Ts.target_spam_folder, Ts.nums_spam
+            spam_train, Ts.target_spam_folder, Ts.nums_spam
         )
 
     if Ts.augment_ham:
         ham_train = ha.create_augmented_images(
             ham_train,
-            Ts.ham_folder,
             Ts.target_ham_folder,
             Ts.nums_ham,
             Ts.credential_path,
