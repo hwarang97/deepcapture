@@ -5,18 +5,12 @@ from PIL import Image
 from PIL import ImageSequence
 
 
-def create_augmented_images(source_folder, target_folder, num_images):
-    # 예시: create_augmented_images(source_folder, target_folder, 10) - 10개의 새로운 이미지 생성
-    """이미지 데이터 증강 함수"""
-    image_paths = [
-        os.path.join(source_folder, file)
-        for file in os.listdir(source_folder)
-        if file.endswith((".png", ".jpg", ".jpeg", ".gif"))
-    ]
+def create_augmented_images(spam_train, target_folder, num_images):
+    augmented_images = []
 
     for _ in range(num_images):
         try:
-            img1_path, img2_path = random.sample(image_paths, 2)
+            (img1_path, label1), (img2_path, label2) = random.sample(spam_train, 2)
 
             img1, img2 = open_image(img1_path), open_image(img2_path)
             if img1 is None or img2 is None:
@@ -24,14 +18,16 @@ def create_augmented_images(source_folder, target_folder, num_images):
 
             new_image = augment_images(img1, img2)
             if new_image:
-                save_new_image(new_image, target_folder)
+                new_image_path = save_new_image(new_image, target_folder)
+                augmented_images.append((new_image_path, label1))
 
         except Exception as e:
             print(f"Skipping image pair due to error: {e}")
 
+    return spam_train + augmented_images
+
 
 def open_image(image_path):
-    """이미지를 안전하게 여는 함수"""
     try:
         img = Image.open(image_path)
         if image_path.endswith(".gif"):
@@ -43,7 +39,6 @@ def open_image(image_path):
 
 
 def augment_images(img1, img2):
-    """이미지 증강 함수"""
     try:
         min_width = min(img1.width, img2.width)
         min_height = min(img1.height, img2.height)
@@ -63,8 +58,8 @@ def augment_images(img1, img2):
 
 
 def save_new_image(new_image, target_folder):
-    """이미지 저장 함수"""
     new_image_path = os.path.join(
         target_folder, f"augmented_{random.randint(1, 10000)}.jpg"
     )
     new_image.save(new_image_path)
+    return new_image_path
