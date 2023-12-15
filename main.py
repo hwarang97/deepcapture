@@ -13,15 +13,6 @@ from train import train_xgb
 
 
 def main():
-    # preprocess
-    if Ts.augment_spam:
-        sa.create_augmented_images(Ts.spam_folder, Ts.target_spam_folder, Ts.nums_spam)
-
-    if Ts.augment_ham:
-        ha.create_augmented_images(
-            Ts.ham_folder, Ts.target_ham_folder, Ts.nums_ham, Ts.credential_path
-        )
-
     # split data
     spam_train, spam_val, spam_test = split_dataset(
         Ts.spam_folder, label=1, val_size=Ts.val_ratio, test_size=Ts.test_ratio
@@ -29,6 +20,21 @@ def main():
     ham_train, ham_val, ham_test = split_dataset(
         Ts.ham_folder, label=0, val_size=Ts.val_ratio, test_size=Ts.test_ratio
     )
+
+    # preprocess
+    if Ts.augment_spam:
+        spam_train = sa.create_augmented_images(
+            spam_train, Ts.spam_folder, Ts.target_spam_folder, Ts.nums_spam
+        )
+
+    if Ts.augment_ham:
+        ham_train = ha.create_augmented_images(
+            ham_train,
+            Ts.ham_folder,
+            Ts.target_ham_folder,
+            Ts.nums_ham,
+            Ts.credential_path,
+        )
 
     # combine data
     train_data = spam_train + ham_train
