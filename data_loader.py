@@ -35,13 +35,6 @@ def split_dataset(folder_path, label, val_size=0.1, test_size=0.1):
 
 class ImageDataset(Dataset):
     def __init__(self, data_list, transform=None):
-        """
-        Args:
-        - data_list (list of tuples): List of (image_path, label)
-        - transform (callable, optional): Optional transform to be applied on an image.
-        """
-
-        # filter problematic image
         self.data_list = [item for item in data_list if self._is_valid_image(item[0])]
         self.transform = transform
 
@@ -59,7 +52,6 @@ class ImageDataset(Dataset):
     def __getitem__(self, idx):
         img_path, label = self.data_list[idx]
 
-        # open image with PIL
         with Image.open(img_path) as image:
             if image.mode != "RGB":
                 image = image.convert("RGB")
